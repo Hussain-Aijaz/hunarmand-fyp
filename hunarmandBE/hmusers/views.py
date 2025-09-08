@@ -29,11 +29,10 @@ class UserRegistrationView (APIView):
 
     def post(self, request, format=None):
         serializer = UserRegistrationSerializer(data = request.data)
-        if serializer.is_valid(raise_exception=True):
-            Users = serializer.save()
-            token = get_tokens_for_user(Users)
-            return Response({'token':token,'msg':'Resgistration Successful'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        Users = serializer.save()
+        token = get_tokens_for_user(Users)
+        return Response({'token':token,'msg':'Resgistration Successful'}, status=status.HTTP_201_CREATED)
 
 # User Login Main Logic
 class UserLoginView (APIView):
@@ -65,9 +64,8 @@ class UserChangePasswordView(APIView):
 
     def post(self, request , format = None):
         serializer = UserChangePasswordSerializer(data = request.data , context= {'user':request.user})
-        if serializer.is_valid(raise_exception=True):
-            return Response({'msg':'Password Change Successful'}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        return Response({'msg':'Password Change Successful'}, status=status.HTTP_201_CREATED)
     
 
 class SendPasswordResetEmailView (APIView):
