@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'hmusers',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -167,6 +168,8 @@ SIMPLE_JWT = {
 PASSWORD_RESET_TIMEOUT=900          # 900 Sec = 15 Min
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
+    "http://localhost:8000",
     "http://127.0.0.1:9000",
 ]
+
+APPEND_SLASH = False
