@@ -48,6 +48,8 @@ class Users(AbstractBaseUser):
     phone = models.CharField(max_length=50)
     role = models.CharField(max_length=50)
     id = models.AutoField(primary_key=True)
+    langitude = models.CharField(max_length=50, null=True, blank=True)
+    latitude = models.CharField(max_length=50, null=True, blank=True)
     
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)

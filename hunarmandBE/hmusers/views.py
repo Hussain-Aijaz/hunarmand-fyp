@@ -8,6 +8,7 @@ from hmusers.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 
 
 # Manully token Generation
@@ -37,7 +38,7 @@ class UserRegistrationView (APIView):
 # User Login Main Logic
 class UserLoginView (APIView):
      renderer_classes = [UserRenderer]
-
+     permission_classes = [AllowAny]
      def post(self, request, format=None):
         serializer = UserLoginSerializer(data = request.data)
         if serializer.is_valid(raise_exception=True):
