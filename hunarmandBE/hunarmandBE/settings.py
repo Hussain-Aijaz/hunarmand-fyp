@@ -16,7 +16,11 @@ SECRET_KEY = 'django-insecure-s94z14vr&)e&-bgzv0i64eb6jt$6nnxa&(0h7ultl1dudreu(5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# OR if you're using Django 3.1+, you can allow all in debug mode:
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+else:
+    ALLOWED_HOSTS = ['yourdomain.com']
 
 
 # Application definition
@@ -177,6 +181,7 @@ PASSWORD_RESET_TIMEOUT=900          # 900 Sec = 15 Min
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:9000",
+    "http://10.0.2.2",
 ]
 
 APPEND_SLASH = False
