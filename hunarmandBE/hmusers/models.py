@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from api.enum import USER_ROLE_ENUM
 
 class UserManager(BaseUserManager):
     def create_user(self, email, name,phone, password=None,password2=None):
@@ -46,9 +47,9 @@ class Users(AbstractBaseUser):
 
     name = models.CharField(max_length=50)
     phone = models.CharField(max_length=50)
-    role = models.CharField(max_length=50)
+    role = models.CharField(max_length=50, choices=USER_ROLE_ENUM ,null=False, blank=False)
     id = models.AutoField(primary_key=True)
-    langitude = models.CharField(max_length=50, null=True, blank=True)
+    longitude = models.CharField(max_length=50, null=True, blank=True)
     latitude = models.CharField(max_length=50, null=True, blank=True)
     
     is_active = models.BooleanField(default=True)

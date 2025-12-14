@@ -47,6 +47,11 @@ class UserLoginView (APIView):
             Users = authenticate(email = email, password = password)
             if Users is not None:
                 token = get_tokens_for_user(Users)
+                latitude = serializer.data.get('latitude')
+                longitude = serializer.data.get('longitude')
+                Users.latitude = latitude
+                Users.longitude = longitude
+                Users.save()
                 return Response({'token':token,'msg':'Login Successful'}, status=status.HTTP_200_OK)
             else:
                 return Response({'errors':'Login Failed'}, status=status.HTTP_404_NOT_FOUND)

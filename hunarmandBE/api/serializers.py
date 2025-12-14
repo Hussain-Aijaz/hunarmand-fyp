@@ -13,7 +13,7 @@ class JobsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jobs
         fields = "__all__"
-        read_only_fields = ("created_by", "modified_by", "created_at", "update_at")
+        read_only_fields = ("created_by", "modified_by", "created_at", "update_at","task_id")
 
 
 class BidsSerializer(serializers.ModelSerializer):
