@@ -27,6 +27,7 @@ def get_tokens_for_user(user):
 class UserRegistrationView (APIView):
 
     renderer_classes = [UserRenderer]
+    permission_classes = [AllowAny]
 
     def post(self, request, format=None):
         serializer = UserRegistrationSerializer(data = request.data)
