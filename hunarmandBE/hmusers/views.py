@@ -33,8 +33,7 @@ class UserRegistrationView (APIView):
         serializer = UserRegistrationSerializer(data = request.data)
         serializer.is_valid(raise_exception=True)
         Users = serializer.save()
-        token = get_tokens_for_user(Users)
-        return Response({'token':token,'msg':'Resgistration Successful'}, status=status.HTTP_201_CREATED)
+        return Response({'msg':'Resgistration Successful'}, status=status.HTTP_201_CREATED)
 
 # User Login Main Logic
 class UserLoginView (APIView):

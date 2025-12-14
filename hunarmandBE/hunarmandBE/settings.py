@@ -176,7 +176,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
-PASSWORD_RESET_TIMEOUT=900          # 900 Sec = 15 Min
+PASSWORD_RESET_TIMEOUT=90000          # 900 Sec = 15 Min
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
