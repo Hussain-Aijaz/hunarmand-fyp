@@ -8,7 +8,7 @@ def calculate_distance(user_lat, user_lon, jobs, radius_km = 5 ):
         )
 
     # Filter out jobs with no creator or missing lat/lon
-    jobs = [job for job in jobs if job.created_by and job.created_by.latitude is not None and job.created_by.langitude is not None]
+    jobs = [job for job in jobs if job.created_by and job.created_by.latitude is not None and job.created_by.longitude is not None]
 
     filtered_jobs = []
     # Annotate distance and filter
@@ -17,7 +17,7 @@ def calculate_distance(user_lat, user_lon, jobs, radius_km = 5 ):
             user_lat,
             user_lon,
             job.created_by.latitude,
-            job.created_by.langitude
+            job.created_by.longitude
         )
         if job.distance <= radius_km:  # <-- must be inside the loop
             filtered_jobs.append(job)
