@@ -1,5 +1,6 @@
 from math import radians, cos, sin, acos
 
+
 def calculate_distance(user_lat, user_lon, jobs, radius_km = 5 ):
     def haversine(lat1, lon1, lat2, lon2):
         return 6371 * acos(
@@ -14,10 +15,10 @@ def calculate_distance(user_lat, user_lon, jobs, radius_km = 5 ):
     # Annotate distance and filter
     for job in jobs:
         job.distance = haversine(
-            user_lat,
-            user_lon,
-            job.created_by.latitude,
-            job.created_by.longitude
+            float(user_lat),
+            float(user_lon),
+            float(job.created_by.latitude),
+            float(job.created_by.longitude)
         )
         if job.distance <= radius_km:  # <-- must be inside the loop
             filtered_jobs.append(job)
