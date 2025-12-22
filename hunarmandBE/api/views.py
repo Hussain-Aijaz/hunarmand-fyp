@@ -97,9 +97,33 @@ class BidsViewSet(viewsets.ModelViewSet):
         return Bids.objects.none()    
     
 
+  #  def perform_create(self, serializer):
+   #     user = get_current_user()
+    #    serializer.save(created_by=user, modified_by=user)
+    
     def perform_create(self, serializer):
-        user = get_current_user()
-        serializer.save(created_by=user, modified_by=user)
+        user = self.request.user
+
+        # Apply rule only for providers
+        if user.role == 'provider':
+            job = serializer.validated_data.get('job')
+
+            draft_exists = Bids.objects.filter(
+                job=job,
+                bidder=user,
+                status='Draft'
+            ).exists()
+
+            if draft_exists:
+                raise ValidationError({
+                    "detail": "You already have a draft bid for this job. Please update the existing draft instead of creating a new one."
+                })
+
+        serializer.save(
+            bidder=user,
+            created_by=user,
+            modified_by=user
+        )
 
     def perform_update(self, serializer):
         user = get_current_user()
