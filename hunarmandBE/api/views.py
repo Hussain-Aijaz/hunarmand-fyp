@@ -130,8 +130,7 @@ class BidsViewSet(viewsets.ModelViewSet):
         )
 
     def perform_update(self, serializer):
-        user = get_current_user()
-        serializer.save(modified_by=user)
+        serializer.save(modified_by=self.request.user)
 
 
 class EnumListAPIView(APIView):
