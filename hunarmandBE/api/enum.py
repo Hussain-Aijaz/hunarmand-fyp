@@ -22,3 +22,27 @@ BID_STATUS_ENUM = [
     ('Accepted','Accepted'),
     ('Rejected','Rejected')
 ]
+
+CATEGORY_ENUM = [
+    ('Plumbing','Plumbing'),
+    ('Electrical','Electrical'),
+    ('Carpentry','Carpentry'),
+    ('Cleaning','Cleaning'),
+    ('Painting','Painting'),
+    ('Landscaping','Landscaping'),
+    ('Roofing','Roofing'),
+    ('Flooring','Flooring'),
+    ('HVAC','HVAC'),
+    ('Appliance Repair','Appliance Repair'),
+    ('General Contracting','General Contracting'),
+    ('Programming','Programming'),
+    ('Design','Design'),
+    ('Writing','Writing'),
+    ('Marketing','Marketing'),
+    ('Consulting','Consulting'),
+    ('Education','Education'),
+    ('Healthcare','Healthcare'),
+    ('Finance','Finance'),
+    ('Legal','Legal'),
+    ('Other','Other')
+]

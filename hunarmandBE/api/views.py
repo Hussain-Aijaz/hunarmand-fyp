@@ -5,6 +5,10 @@ from .serializers import UserReviewsSerializer, JobsSerializer, BidsSerializer
 from api.middleware.current_user import get_current_user
 from api.utils import calculate_distance
 from rest_framework.exceptions import ValidationError
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .enum import *
 
 
 class UserReviewsViewSet(viewsets.ModelViewSet):
@@ -128,3 +132,16 @@ class BidsViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         user = get_current_user()
         serializer.save(modified_by=user)
+
+
+class EnumListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({
+            "job_status": [key for key, _ in JOB_STATUS_ENUM],
+            "priority": [key for key, _ in PRIORITY_ENUM],
+            "user_roles": [key for key, _ in USER_ROLE_ENUM],
+            "bid_status": [key for key, _ in BID_STATUS_ENUM],
+            "category": [key for key, _ in CATEGORY_ENUM],
+        })

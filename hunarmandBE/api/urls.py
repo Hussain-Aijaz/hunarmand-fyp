@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    EnumListAPIView,
     UserReviewsViewSet,
     JobsViewSet,
     BidsViewSet
@@ -47,4 +48,7 @@ urlpatterns = [
     
     path('bids/', bids_list, name='bids-list'),
     path('bids/<int:pk>/', bids_detail, name='bids-detail'),
+
+    path("meta/enums/", EnumListAPIView.as_view(), name="enums")
+
 ]
