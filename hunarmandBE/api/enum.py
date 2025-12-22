@@ -16,3 +16,9 @@ USER_ROLE_ENUM = [
     ('seeker','seeker'),
     ('provider','provider')
 ]
+BID_STATUS_ENUM = [
+    
+    ('Draft','Draft'),
+    ('Accepted','Accepted'),
+    ('Rejected','Rejected')
+]

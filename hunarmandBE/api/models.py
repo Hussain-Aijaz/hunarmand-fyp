@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from api.middleware.current_user import get_current_user
-from .enum import JOB_STATUS_ENUM, PRIORITY_ENUM
+from .enum import JOB_STATUS_ENUM, PRIORITY_ENUM, BID_STATUS_ENUM
 from .number_seq_format import TASK_PREFIX
 import uuid
 
@@ -90,7 +90,7 @@ class Bids (models.Model):
         related_name='bids_made'
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=50)
+    status = models.CharField(max_length=50, choices=BID_STATUS_ENUM, null=True, blank=True, default='Draft')
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 

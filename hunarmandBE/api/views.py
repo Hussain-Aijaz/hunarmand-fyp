@@ -4,6 +4,7 @@ from .models import UserReviews, Jobs, Bids
 from .serializers import UserReviewsSerializer, JobsSerializer, BidsSerializer
 from api.middleware.current_user import get_current_user
 from api.utils import calculate_distance
+from rest_framework.exceptions import ValidationError
 
 
 class UserReviewsViewSet(viewsets.ModelViewSet):
@@ -69,12 +70,32 @@ class BidsViewSet(viewsets.ModelViewSet):
     queryset = Bids.objects.all()
     serializer_class = BidsSerializer
     permission_classes = [permissions.IsAuthenticated]
-    
+
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['job', 'bidder', 'status']
     search_fields = ['job__task_id', 'bidder__username', 'status']
     ordering_fields = ['created_at', 'update_at', 'amount']
     ordering = ['-created_at']
+
+    def get_queryset(self):
+        user = self.request.user
+        job_id = self.request.query_params.get('job')
+
+        if self.request.method == 'GET' and not job_id:
+            raise ValidationError({
+                "job": "job_id query parameter is required."
+            })
+
+        queryset = Bids.objects.filter(job_id=job_id)
+
+        if user.role == 'provider':
+            return queryset.filter(bidder=user)
+
+        elif user.role == 'seeker':
+            return queryset.filter(job__created_by=user)
+
+        return Bids.objects.none()    
+    
 
     def perform_create(self, serializer):
         user = get_current_user()
