@@ -4,6 +4,7 @@ from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeErr
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from hmusers.utils import Util
+from api.utils import count_jobs
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
 
@@ -45,10 +46,41 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-   class Meta:
-    model = Users
-    fields = ['id','email','name','phone','role','longitude','latitude']
+    
+    started_jobs = serializers.SerializerMethodField()
+    waiting_jobs = serializers.SerializerMethodField()
+    ended_jobs = serializers.SerializerMethodField()
+    total_bids = serializers.SerializerMethodField()
+    approved_bids = serializers.SerializerMethodField()
+    rejected_bids = serializers.SerializerMethodField()
 
+    class Meta:
+      model = Users
+      fields = ['id','email','name','phone','role','longitude','latitude','started_jobs','waiting_jobs','ended_jobs','total_bids','approved_bids','rejected_bids']
+    
+    def get_started_jobs(self, obj):
+        count = count_jobs(obj.id)
+        return count[0]
+
+    def get_waiting_jobs(self, obj):
+        count = count_jobs(obj.id)
+        return count[1]
+    
+    def get_ended_jobs(self, obj):
+        count = count_jobs(obj.id)
+        return count[2]
+
+    def get_total_bids(self, obj):
+        count = count_jobs(obj.id)
+        return count[3]
+
+    def get_approved_bids(self, obj):
+        count = count_jobs(obj.id)
+        return count[4]
+
+    def get_rejected_bids(self, obj):
+        count = count_jobs(obj.id)
+        return count[5]
 
 class UserChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=255, style={'input_type':'password'}, write_only=True)

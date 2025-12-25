@@ -46,7 +46,7 @@ class Jobs (models.Model):
     priority = models.CharField(max_length=50, choices=PRIORITY_ENUM, null=True, blank=True, default=None)
     subject = models.CharField(max_length=150)
     description = models.CharField(max_length=500)
-    status = models.CharField(max_length=50, choices=JOB_STATUS_ENUM)
+    status = models.CharField(max_length=50, choices=JOB_STATUS_ENUM, default='Draft')
     assigned_to = models.CharField(max_length=50, blank=True, null=True)
     
     created_at = models.DateTimeField(auto_now_add=True)

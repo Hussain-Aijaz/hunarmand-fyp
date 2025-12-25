@@ -1,8 +1,10 @@
 JOB_STATUS_ENUM = [
 
-    ('None','None'),
+    ('Draft','Draft'),
+    ('Waiting','Waiting'),
     ('Approved','Approved'),
     ('Rejected','Rejected'),
+    ('Started','Started'),
     ('Ended','Ended')
 ]
 PRIORITY_ENUM = [
@@ -19,7 +21,7 @@ USER_ROLE_ENUM = [
 BID_STATUS_ENUM = [
     
     ('Draft','Draft'),
-    ('Accepted','Accepted'),
+    ('Approved','Approved'),
     ('Rejected','Rejected')
 ]
 

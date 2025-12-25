@@ -1,14 +1,18 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
+
+from hmusers.models import Users
 from .models import UserReviews, Jobs, Bids
 from .serializers import UserReviewsSerializer, JobsSerializer, BidsSerializer
 from api.middleware.current_user import get_current_user
-from api.utils import calculate_distance
+from api.utils import *
 from rest_framework.exceptions import ValidationError
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .enum import *
+from django.db.models import Count, Min
 
 
 class UserReviewsViewSet(viewsets.ModelViewSet):
@@ -45,10 +49,17 @@ class JobsViewSet(viewsets.ModelViewSet):
             jobs_filtered = calculate_distance(user.latitude, user.longitude, all_jobs)
             # convert list to queryset
             job_ids = [job.id for job in jobs_filtered]
-            return Jobs.objects.filter(id__in=job_ids).order_by('created_at')  # optional ordering
+            queryset = Jobs.objects.filter(id__in=job_ids).annotate(
+            total_bids=Count('bids'),
+            minimum_bid=Min('bids__amount')
+            ).order_by('created_at')
+            return queryset  # optional ordering
 
         elif user.role == 'seeker':
-            return Jobs.objects.filter(created_by=user)  # already queryset
+            return Jobs.objects.filter(created_by=user).annotate(
+                total_bids=Count('bids'),
+                minimum_bid=Min('bids__amount')
+            )
 
         return Jobs.objects.none() 
     
@@ -101,9 +112,6 @@ class BidsViewSet(viewsets.ModelViewSet):
         return Bids.objects.none()    
     
 
-  #  def perform_create(self, serializer):
-   #     user = get_current_user()
-    #    serializer.save(created_by=user, modified_by=user)
     
     def perform_create(self, serializer):
         user = self.request.user
@@ -111,10 +119,12 @@ class BidsViewSet(viewsets.ModelViewSet):
         # Apply rule only for providers
         if user.role == 'provider':
             job = serializer.validated_data.get('job')
+            bidder_id = self.request.data.get('bidder')
 
             draft_exists = Bids.objects.filter(
                 job=job,
-                bidder=user,
+                #bidder=user,
+                bidder=get_object_or_404(Users, id=bidder_id),
                 status='Draft'
             ).exists()
 
@@ -122,14 +132,27 @@ class BidsViewSet(viewsets.ModelViewSet):
                 raise ValidationError({
                     "detail": "You already have a draft bid for this job. Please update the existing draft instead of creating a new one."
                 })
+            
+            if approved_bid_check(job.id):
+                raise ValidationError({
+                    "detail": "An approved bid already exists for this job. No further bids can be placed."
+                })
+
+        job_id = serializer.validated_data.get('job').id
+        bid_count = Bids.objects.filter(job_id=job_id).count()
+        if bid_count == 0:
+            job_status_update(job_id, 'Waiting')
 
         serializer.save(
-            bidder=user,
+            bidder=get_object_or_404(Users, id=bidder_id),
             created_by=user,
             modified_by=user
         )
 
     def perform_update(self, serializer):
+        if serializer.validated_data.get('status') == 'Approved':
+            job = serializer.validated_data.get('job')
+            bid_status_update(job.id, 'Rejected', serializer.instance.id)
         serializer.save(modified_by=self.request.user)
 
 
