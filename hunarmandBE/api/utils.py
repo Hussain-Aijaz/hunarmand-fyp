@@ -35,13 +35,15 @@ def count_jobs(user_id):
         started_jobs = Jobs.objects.filter(created_by=user_id, status='Started').count()
         waiting_jobs = Jobs.objects.filter(created_by=user_id, status='Waiting').count()
         ended_jobs = Jobs.objects.filter(created_by=user_id, status='Ended').count()
+        
         bids_arr = []
         B_Jobs = Jobs.objects.filter(created_by=user_id)
         all_Bids = Bids.objects.all()
         for bid in all_Bids:
             if bid.job in B_Jobs:    
              bids_arr.append(bid.job.id)
-        total_bids = len(set(bids_arr))
+        total_bids = len(bids_arr)
+
         approved_bids = 0
         rejected_bids = 0
         return started_jobs, waiting_jobs, ended_jobs, total_bids,approved_bids, rejected_bids
@@ -64,6 +66,14 @@ def count_bids(job_id):
     
     return total_bids, minimum_bid_value
 
+def count_bids_del(job_id):
+    job_id = Jobs.objects.get(id=job_id)
+    job_bids = Bids.objects.filter(job=job_id)
+
+    total_bids = Bids.objects.filter(job=job_id).count()
+    
+    return total_bids
+
 def job_status_update(job_id, new_status):
     try:
         job = Jobs.objects.get(id=job_id)
@@ -83,6 +93,7 @@ def bid_status_update(job_id, new_status, bid_id):
         return True
     except Bids.DoesNotExist:
         return False
+    
 def approved_bid_check(job_id):
     try:
         approved_bid = Bids.objects.get(job=job_id, status='Approved')
@@ -103,4 +114,14 @@ def rejected_bid_check(job_id, user_id):
             return False
        
     except Bids.DoesNotExist:
+        return False
+    
+def job_assigned_to(job_id, assigned_to_user_id):
+    try:
+        job = Jobs.objects.get(id=job_id)
+        job.assigned_to = assigned_to_user_id
+        job.status = 'Approved'
+        job.save()
+        return True
+    except Jobs.DoesNotExist:
         return False

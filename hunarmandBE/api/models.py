@@ -48,7 +48,8 @@ class Jobs (models.Model):
     description = models.CharField(max_length=500)
     status = models.CharField(max_length=50, choices=JOB_STATUS_ENUM, default='Draft')
     assigned_to = models.CharField(max_length=50, blank=True, null=True)
-    
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(

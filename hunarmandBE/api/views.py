@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
-
 from hmusers.models import Users
 from .models import UserReviews, Jobs, Bids
 from .serializers import UserReviewsSerializer, JobsSerializer, BidsSerializer
@@ -13,6 +12,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .enum import *
 from django.db.models import Count, Min
+from django.db import transaction
 
 
 class UserReviewsViewSet(viewsets.ModelViewSet):
@@ -153,8 +153,20 @@ class BidsViewSet(viewsets.ModelViewSet):
         if serializer.validated_data.get('status') == 'Approved':
             job = serializer.validated_data.get('job')
             bid_status_update(job.id, 'Rejected', serializer.instance.id)
+            job_assigned_to(job.id, serializer.validated_data.get('bidder').id)
         serializer.save(modified_by=self.request.user)
+    
+    def perform_destroy(self, instance):
+        job = instance.job
+        remaining_bids_count = count_bids_del(job.id)
 
+        with transaction.atomic():
+            instance.delete()
+
+            if remaining_bids_count == 1:
+                job.status = "Draft"  # or any required status
+                job.save(update_fields=["status"])
+    
 
 class EnumListAPIView(APIView):
     permission_classes = [IsAuthenticated]
