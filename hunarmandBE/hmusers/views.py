@@ -49,8 +49,8 @@ class UserLoginView (APIView):
                 token = get_tokens_for_user(Users)
                 latitude = serializer.data.get('latitude')
                 longitude = serializer.data.get('longitude')
-                Users.latitude = latitude
-                Users.longitude = longitude
+                # Users.latitude = latitude
+                # Users.longitude = longitude
                 Users.save()
                 return Response({'token':token,'msg':'Login Successful'}, status=status.HTTP_200_OK)
             else:

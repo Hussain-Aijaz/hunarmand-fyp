@@ -38,8 +38,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.ModelSerializer):
   email = serializers.EmailField(max_length=255, required=True)
-  longitude = serializers.CharField(max_length=50, required=True)
-  latitude = serializers.CharField(max_length=50, required=True)
+  longitude = serializers.CharField(max_length=50, required=False)
+  latitude = serializers.CharField(max_length=50, required=False)
   class Meta:
     model = Users
     fields = ['email', 'password','longitude','latitude']
