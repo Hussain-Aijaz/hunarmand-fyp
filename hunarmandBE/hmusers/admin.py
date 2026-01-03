@@ -36,3 +36,7 @@ class UserModelAdmin(BaseUserAdmin):
     
 # Now register the new UserAdmin...
 admin.site.register(Users, UserModelAdmin)
+
+admin.site.site_header = "Welcome to Hunarmand Admin Portal"
+admin.site.site_title = "Hunarmand Admin Portal"
+admin.site.index_title = "Welcome to Hunarmand Researcher Portal"
