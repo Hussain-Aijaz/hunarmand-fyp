@@ -16,14 +16,32 @@ def calculate_distance(user_lat, user_lon, jobs, radius_km = 5 ):
     filtered_jobs = []
     # Annotate distance and filter
     for job in jobs:
-        job.distance = haversine(
-            float(user_lat),
-            float(user_lon),
-            float(job.created_by.latitude),
-            float(job.created_by.longitude)
-        )
-        if job.distance <= radius_km:  # <-- must be inside the loop
-            filtered_jobs.append(job)
+
+        if (
+            user_lat is not None and
+            user_lon is not None and
+            job.created_by.latitude is not None and
+            job.created_by.longitude is not None
+        ):
+            job.distance = haversine(
+                float(user_lat),
+                float(user_lon),
+                float(job.created_by.latitude),
+                float(job.created_by.longitude)
+            )
+            if job.distance <= radius_km: 
+                filtered_jobs.append(job)
+        else:
+            job.distance = None 
+
+        # job.distance = haversine(
+        #     float(user_lat),
+        #     float(user_lon),
+        #     float(job.created_by.latitude),
+        #     float(job.created_by.longitude)
+        # )
+        # if job.distance <= radius_km: 
+        #     filtered_jobs.append(job)
     
     # Sort by nearest first
     filtered_jobs.sort(key=lambda x: x.distance)
